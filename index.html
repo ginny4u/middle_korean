@@ -183,7 +183,7 @@ var CAT = {}; for (var k in TAGS) TAGS[k].forEach(function(t){ CAT[t] = k; });
 /* ---------- 저장 ---------- */
 var S = {stats:{}, cards:{}, pairs:{}};
 try { var raw = localStorage.getItem('mk_v1'); if (raw) S = JSON.parse(raw); } catch(e){}
-var ZOOMS = [['보통',1],['크게',1.15],['아주 크게',1.32]];
+var ZOOMS = [['작게',0.9],['보통',1],['크게',1.15]];
 function applyZoom(){ document.body.style.setProperty('--z', S.zoom || 1); }
 function drawZoomBar(){
   var bar = document.getElementById('zoombar');
