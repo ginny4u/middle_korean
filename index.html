@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>지니대왕과 함께하는 중세국어 연습</title>
+<title>👑지니대왕과 함께하는 중세국어 연습👑</title>
 <meta name="description" content="세종어제훈민정음, 용비어천가, 소학언해의 어절로 중세국어 문법 요소를 반복 학습합니다.">
 <meta name="theme-color" content="#F3F5FC">
 <meta name="format-detection" content="telephone=no">
@@ -25,7 +25,7 @@
  --ui:'NSQ','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15.5px;line-height:1.65;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{zoom:var(--z,1);margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.7;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 .y{font-family:'Yet',serif}
 /* 글꼴은 둘뿐이다. 한자나 옛한글이 섞일 수 있는 자리는 전부 명조,
    순 한글만 나오는 껍데기는 시스템 고딕. */
@@ -36,7 +36,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font
    (제목만 위의 .hero h1 규칙에 따라 주아체) */
 .schoolpick,.schoolpick *{font-family:var(--ui)}
 .schoolpick .hero h1,.schoolpick .hero h1 span{font-family:'Jua','NSQ',sans-serif}
-.wrap{max-width:620px;margin:0 auto;padding:16px 14px 70px}
+.wrap{max-width:620px;margin:0 auto;padding:16px 14px 84px}
 button{font-family:inherit;color:inherit;cursor:pointer}
 .hide{display:none!important}
 
@@ -66,6 +66,14 @@ button{font-family:inherit;color:inherit;cursor:pointer}
 .emptyking{display:flex;align-items:center;justify-content:center;gap:9px;padding:10px 0}
 .emptyking img{width:44px}
 .emptyking span{font-size:13px;color:var(--sub)}
+/* 어느 화면에서나 글자 크기를 바꿀 수 있게 아래에 고정한다 */
+#zoombar{position:fixed;left:0;right:0;bottom:0;z-index:20;background:rgba(243,245,252,.94);
+  border-top:1px solid var(--line);padding:7px 14px calc(7px + env(safe-area-inset-bottom));
+  display:flex;align-items:center;justify-content:center;gap:6px}
+#zoombar .lb{font-size:12.5px;color:var(--sub);font-family:var(--ui);margin-right:4px}
+#zoombar button{border:1.5px solid var(--line);background:var(--card);border-radius:10px;
+  padding:7px 13px;font-size:13.5px;font-family:var(--ui);color:var(--sub)}
+#zoombar button.on{border-color:var(--main);background:var(--mainSoft);color:var(--main)}
 .lnk{border:0;background:none;padding:0;font-size:13px;color:var(--main);text-decoration:underline}
 
 .pick{display:grid;gap:9px}
@@ -74,78 +82,78 @@ button{font-family:inherit;color:inherit;cursor:pointer}
 .pick button:active{border-color:var(--main)}
 .pick button.cur{border-color:var(--main);background:var(--mainSoft)}
 .badge{margin-left:8px;font-size:11px;font-weight:400;color:var(--main);background:#fff;border-radius:99px;padding:2px 8px;vertical-align:middle}
-.pick .nm{font-size:16px;font-weight:700}
-.pick .ds{font-size:13px;color:var(--sub);margin-top:2px}
+.pick .nm{font-size:17px;font-weight:700}
+.pick .ds{font-size:14px;color:var(--sub);margin-top:2px}
 .pbar{height:6px;background:var(--line);border-radius:99px;margin-top:10px;overflow:hidden}
 .pbar i{display:block;height:100%;background:var(--ok);border-radius:99px;transition:width .3s}
-.pnum{font-size:11.5px;color:var(--sub);margin-top:5px}
+.pnum{font-size:12.5px;color:var(--sub);margin-top:5px}
 
 .pick button.concept{background:linear-gradient(180deg,#FFF 0%,#F7F8FF 100%);border-color:var(--mainSoft)}
 .note .grp{background:var(--card);border-radius:16px;padding:14px 16px;margin-bottom:10px}
-.note h4{margin:0 0 8px;font-size:14px;color:var(--main);font-family:var(--ui);font-weight:700}
+.note h4{margin:0 0 9px;font-size:15px;color:var(--main);font-family:var(--ui);font-weight:700}
 .note .r{display:grid;grid-template-columns:104px 1fr;gap:10px;align-items:baseline;
   padding:6px 0;border-top:1px solid var(--line)}
 .note .r:first-of-type{border-top:0}
-.note .k{font-size:12.5px;color:var(--sub);word-break:keep-all}
-.note .v{font-size:15px;line-height:1.5;word-break:keep-all}
+.note .k{font-size:13.5px;color:var(--sub);word-break:keep-all}
+.note .v{font-size:16.5px;line-height:1.5;word-break:keep-all}
 .mc{display:grid;gap:8px;margin-top:4px}
-.mc button{text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:11px 14px;font-size:15px}
-.mc .o{font-size:17px}
-.mc .og{font-size:12.5px;color:var(--sub);margin-left:8px;font-family:var(--ui)}
+.mc button{text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:13px 15px;font-size:16px}
+.mc .o{font-size:19px}
+.mc .og{font-size:13.5px;color:var(--sub);margin-left:8px;font-family:var(--ui)}
 .mc button:active{border-color:var(--main)}
 .mc.done button{pointer-events:none}
 .mc button.hit{background:var(--okSoft);border-color:var(--ok);color:var(--ok)}
 .mc button.bad{background:var(--noSoft);border-color:var(--no);color:var(--no)}
-.qbox{font-size:17px;line-height:1.6;margin:6px 0 14px;word-break:keep-all}
+.qbox{font-size:18px;line-height:1.6;margin:6px 0 14px;word-break:keep-all}
 .tabs{display:flex;gap:6px;margin-bottom:14px}
-.tabs button{flex:1;border:0;background:var(--card);border-radius:11px;padding:9px 0;font-size:14px;color:var(--sub)}
+.tabs button{flex:1;border:0;background:var(--card);border-radius:11px;padding:11px 0;font-size:15px;color:var(--sub)}
 .tabs button.on{background:var(--main);color:#fff;font-weight:600}
 
 .box{background:var(--card);border-radius:16px;padding:16px;margin-bottom:12px}
-.orig{font-size:19px;line-height:2.1;word-break:keep-all}
+.orig{font-size:21px;line-height:2.15;word-break:keep-all}
 .orig span[data-i]{border-radius:5px;padding:0 2px;cursor:pointer;border-bottom:1px dashed #BFC7E8}
 .orig span[data-i]:active{background:var(--mainSoft)}
 .orig span[data-i].sel{background:var(--mainSoft);color:var(--main);font-weight:600;border-bottom-color:transparent}
-.trans{font-size:13.5px;color:var(--sub);margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
-.peek{margin-top:12px;background:var(--mainSoft);border-radius:12px;padding:13px;font-size:13.5px}
-.peek b{font-size:17px}
+.trans{font-size:15px;line-height:1.75;color:var(--sub);margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.peek{margin-top:12px;background:var(--mainSoft);border-radius:12px;padding:14px;font-size:15px}
+.peek b{font-size:20px}
 .peek .tg{margin:7px 0 6px;display:flex;flex-wrap:wrap;gap:5px}
-.peek .pz{background:#fff;border-radius:9px;padding:9px 11px;margin:8px 0 8px;font-size:15px;line-height:1.8;word-break:keep-all}
+.peek .pz{background:#fff;border-radius:9px;padding:9px 11px;margin:8px 0 8px;font-size:17px;line-height:1.8;word-break:keep-all}
 .peek .pz em{font-style:normal;color:var(--sub);font-size:11px;letter-spacing:.1em;display:block;margin-bottom:2px}
-.peek .tg span{background:#fff;color:var(--main);border-radius:99px;padding:3px 9px;font-size:12px}
-.tip{font-size:12.5px;color:var(--sub);text-align:center;margin:10px 0}
+.peek .tg span{background:#fff;color:var(--main);border-radius:99px;padding:4px 10px;font-size:13px}
+.tip{font-size:13.5px;color:var(--sub);text-align:center;margin:10px 0}
 
-.qtop{display:flex;justify-content:space-between;font-size:12px;color:var(--sub);margin-bottom:8px}
+.qtop{display:flex;justify-content:space-between;font-size:13px;color:var(--sub);margin-bottom:8px}
 .word{text-align:center;padding:16px 4px 6px}
-.word .f{font-size:clamp(30px,8.5vw,42px);line-height:1.5;font-weight:600;word-break:keep-all}
+.word .f{font-size:clamp(34px,9.5vw,46px);line-height:1.5;font-weight:600;word-break:keep-all}
 .word .g{font-size:13px;color:var(--sub);margin-top:8px;opacity:0;transition:opacity .2s}
 .word .g.on{opacity:1}
-.ask{font-size:13px;color:var(--sub);margin:4px 0 10px;text-align:center}
+.ask{font-size:14px;color:var(--sub);margin:4px 0 10px;text-align:center}
 .chips{display:flex;flex-wrap:wrap;gap:7px;justify-content:center}
-.chip{border:1.5px solid var(--line);background:#fff;border-radius:99px;padding:9px 14px;font-size:14px}
+.chip{border:1.5px solid var(--line);background:#fff;border-radius:99px;padding:10px 15px;font-size:15.5px}
 .chip[aria-pressed="true"]{background:var(--main);border-color:var(--main);color:#fff}
 .done .chip{pointer-events:none}
 .chip.hit{background:var(--ok);border-color:var(--ok);color:#fff}
 .chip.miss{background:var(--okSoft);border-color:var(--ok);color:var(--ok)}
 .chip.bad{background:var(--noSoft);border-color:var(--no);color:var(--no);text-decoration:line-through}
-.res{margin-top:14px;border-radius:12px;padding:13px;font-size:13.5px}
+.res{margin-top:14px;border-radius:12px;padding:14px;font-size:15px}
 .res.good{background:var(--okSoft)}
 .res.poor{background:var(--noSoft)}
 .res .hd{margin-bottom:4px}
-.go{width:100%;border:0;border-radius:13px;padding:14px;background:var(--ink);color:#fff;font-size:15px;font-weight:600;margin-top:14px}
+.go{width:100%;border:0;border-radius:13px;padding:15px;background:var(--ink);color:#fff;font-size:16px;font-weight:600;margin-top:14px}
 .go[disabled]{background:var(--line);color:#B9BDCC}
 .go.sub{background:var(--card);color:var(--main);border:1.5px solid var(--mainSoft)}
 .chip:focus-visible,.go:focus-visible,.pick button:focus-visible{outline:2px solid var(--main);outline-offset:2px}
 
-h3{font-size:13.5px;color:var(--sub);font-weight:400;margin:0 0 10px}
-.row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+h3{font-size:14.5px;color:var(--sub);font-weight:400;margin:0 0 10px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:15px}
 .row:last-child{border-bottom:0}
 .row .r{font-size:12px;color:var(--sub);white-space:nowrap}
 .mini{height:5px;background:var(--line);border-radius:99px;overflow:hidden;width:70px}
 .mini i{display:block;height:100%;border-radius:99px}
-.wrongrow{padding:10px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.wrongrow{padding:11px 0;border-bottom:1px solid var(--line);font-size:15px}
 .wrongrow:last-child{border-bottom:0}
-.wrongrow .w{font-size:18px;font-weight:600}
+.wrongrow .w{font-size:20px;font-weight:600}
 .wrongrow .a{color:var(--ok);font-size:12.5px}
 .wrongrow .b{color:var(--no);font-size:12.5px}
 .pair{background:var(--noSoft);border-radius:12px;padding:11px 13px;margin-bottom:8px;font-size:13.5px}
@@ -154,11 +162,12 @@ h3{font-size:13.5px;color:var(--sub);font-weight:400;margin:0 0 10px}
 .fin{text-align:center;padding:26px 10px}
 .fin .big{font-size:36px;font-weight:700;margin-bottom:6px}
 .misslist{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin:16px 0 4px}
-.misslist span{background:var(--noSoft);color:var(--no);border-radius:9px;padding:5px 11px;font-size:17px}
+.misslist span{background:var(--noSoft);color:var(--no);border-radius:9px;padding:6px 12px;font-size:19px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
+<div id="zoombar"></div>
 <div class="wrap">
   <div class="top hide" id="top"><button class="back" id="back">←</button><h1 id="ttl"></h1></div>
   <div id="view"></div>
@@ -174,6 +183,20 @@ var CAT = {}; for (var k in TAGS) TAGS[k].forEach(function(t){ CAT[t] = k; });
 /* ---------- 저장 ---------- */
 var S = {stats:{}, cards:{}, pairs:{}};
 try { var raw = localStorage.getItem('mk_v1'); if (raw) S = JSON.parse(raw); } catch(e){}
+var ZOOMS = [['보통',1],['크게',1.15],['아주 크게',1.32]];
+function applyZoom(){ document.body.style.setProperty('--z', S.zoom || 1); }
+function drawZoomBar(){
+  var bar = document.getElementById('zoombar');
+  bar.innerHTML = '<span class="lb">글자 크기</span>' + ZOOMS.map(function(z, i){
+    return '<button data-z="'+i+'"'+((S.zoom || 1) === z[1] ? ' class="on"' : '')+'>'+z[0]+'</button>';
+  }).join('');
+  Array.prototype.forEach.call(bar.querySelectorAll('button'), function(b){
+    b.onclick = function(){
+      S.zoom = ZOOMS[+b.getAttribute('data-z')][1];
+      save(); applyZoom(); drawZoomBar();   // 화면은 그대로 두고 배율만 바꾼다
+    };
+  });
+}
 function save(){ try { localStorage.setItem('mk_v1', JSON.stringify(S)); } catch(e){} }
 function school(){ return SCHOOLS.filter(function(x){ return x.id === S.school; })[0] || null; }
 function myWorks(){
@@ -640,6 +663,8 @@ function mixed(){
   startQuiz(shuffle(pool), '약한 개념');
 }
 
+applyZoom();
+drawZoomBar();
 home();
 </script>
 </body>
