@@ -238,6 +238,33 @@ function hero(sub){
 var $ = function(id){ return document.getElementById(id); };
 var V = function(){ return $('view'); };
 function shuffle(a){ a = a.slice(); for (var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+// 자음만 남긴 뼈대. 모음만 다른 어절(호ᇙ/ᄒᆞᇙ, 서르/시러)을 찾아내려는 것이다.
+function skel(s){
+  var out = [], i, c, n;
+  for (i = 0; i < s.length; i++){
+    c = s.charCodeAt(i);
+    if (c >= 0xAC00 && c <= 0xD7A3){                                   // 현대 한글 음절
+      n = c - 0xAC00;
+      out.push('L' + Math.floor(n / 588), 'V');
+      if (n % 28) out.push('T' + (n % 28));
+    }
+    else if ((c >= 0x1161 && c <= 0x11A7) || (c >= 0xD7B0 && c <= 0xD7C6)) out.push('V');
+    else if ((c >= 0x1100 && c <= 0x115F) || (c >= 0xA960 && c <= 0xA97C)) out.push('L' + c);
+    else if ((c >= 0x11A8 && c <= 0x11FF) || (c >= 0xD7CB && c <= 0xD7FB)) out.push('T' + c);
+    else out.push('X' + c);
+  }
+  return out.join('|');
+}
+// 같은 작품에 모음만 다른 짝이 있는 어절인지. 그런 것만 뒤 어절을 알려 준다.
+function twinly(w, f){
+  if (!w._tw){
+    var m = {};
+    w.cards.forEach(function(c){ var k = skel(c.f); (m[k] = m[k] || []).push(c.f); });
+    w._tw = m;
+  }
+  var g = w._tw[skel(f)] || [];
+  return g.length > 1;
+}
 // 호ᇙ 과 ᄒᆞᇙ 처럼 비슷한 어절을 가려내도록 본문에서 바로 뒤에 오는 말을 찾아 준다.
 // 마지막 어절이면 대신 바로 앞에 오는 말을 준다.
 function nearWord(w, f){
@@ -252,6 +279,7 @@ function nearWord(w, f){
   return null;
 }
 function ctxLine(w, f){
+  if (!twinly(w, f)) return '';
   var n = nearWord(w, f);
   if (!n) return '';
   return '<div class="ctx">(' + n.dir + '에 ' + mk(n.ws.join(' / ')) + ')</div>';
