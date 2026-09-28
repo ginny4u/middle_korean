@@ -406,7 +406,33 @@ function readTab(){
 var Q = {list:[], queue:[], session:[], cur:null, opts:[], picked:null, graded:false, label:'', n:0};
 var SESSION = 5;   // 한 판에 다루는 어절 수. 부담 없이 한 판 돌릴 분량.
 
-// 한 판에 내보낼 어절을 고른다. 무작위가 아니라 약한 것부터.
+// 한 판에 내보낼 어절을 고른다. 약한 것을 앞세우되 매판 새 어절도 섞는다.
+// 직전 판에 나온 것은 뒤로 미뤄서 같은 문제가 연달아 나오지 않게 한다.
+function deferSeen(a){
+  var last = S.recent || [], A = [], B = [];
+  shuffle(a).forEach(function(x){ (last.indexOf(x.k) < 0 ? A : B).push(x); });
+  return A.concat(B);
+}
+function buckets(pend){
+  var review = [], fresh = [], rest = [];
+  pend.forEach(function(x){
+    var st = S.cards[x.k] || {};
+    if (!st.seen) fresh.push(x);
+    else if (!st.streak) review.push(x);   // 직전에 틀린 것. 누적 오답 수가 아니라 최근 결과로 판단한다.
+    else rest.push(x);
+  });
+  return [deferSeen(review), deferSeen(fresh), deferSeen(rest)];
+}
+// 복습을 한 판에 다 채우면 틀린 어절만 돌고 돌아 새 어절을 영영 못 본다.
+function mixSession(pend, n){
+  var b = buckets(pend), review = b[0], pool = b[1].concat(b[2]);
+  var cap = Math.max(1, Math.round(n * 0.4));   // 5문항이면 복습은 최대 2개
+  var out = review.slice(0, cap);
+  pool.concat(review.slice(cap)).forEach(function(x){ if (out.length < n) out.push(x); });
+  S.recent = out.map(function(x){ return x.k; });
+  save();
+  return shuffle(out);
+}
 function pickSession(list, n){
   var pend = list.filter(function(x){ return !((S.cards[x.k]||{}).streak >= 2); });
   if (!pend.length){                      // 다 끝냈으면 처음부터 다시
@@ -414,15 +440,7 @@ function pickSession(list, n){
     pend = list.slice();
   }
   if (pend.length <= n) return shuffle(pend);
-  var wrong = [], fresh = [], rest = [];
-  pend.forEach(function(x){
-    var st = S.cards[x.k] || {};
-    if (st.wrong) wrong.push(x);
-    else if (!st.seen) fresh.push(x);
-    else rest.push(x);
-  });
-  var order = shuffle(wrong).concat(shuffle(fresh), shuffle(rest));
-  return shuffle(order.slice(0, n));
+  return mixSession(pend, n);
 }
 
 function startQuiz(list, label){
@@ -646,10 +664,7 @@ function conceptQuiz(){
   var all = conceptCards();
   var pend = all.filter(function(x){ return !((S.cards[x.k]||{}).streak >= 2); });
   if (!pend.length){ all.forEach(function(x){ cardState(x.k).streak = 0; }); pend = all.slice(); }
-  var wrong = [], fresh = [], rest = [];
-  pend.forEach(function(x){ var st = S.cards[x.k] || {};
-    if (st.wrong) wrong.push(x); else if (!st.seen) fresh.push(x); else rest.push(x); });
-  C.queue = shuffle(shuffle(wrong).concat(shuffle(fresh), shuffle(rest)).slice(0, SESSION));
+  C.queue = pend.length <= SESSION ? shuffle(pend) : mixSession(pend, SESSION);
   C.total = C.queue.length; C.n = 0; C.right = 0;
   nextC();
 }
