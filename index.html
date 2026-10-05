@@ -87,6 +87,9 @@ button{font-family:inherit;color:inherit;cursor:pointer}
 .pbar{height:6px;background:var(--line);border-radius:99px;margin-top:10px;overflow:hidden}
 .pbar i{display:block;height:100%;background:var(--ok);border-radius:99px;transition:width .3s}
 .pnum{font-size:12.5px;color:var(--sub);margin-top:5px}
+.pnum b{color:var(--warm);font-weight:600}
+.lap{background:var(--mainSoft);color:var(--main);border-radius:12px;padding:10px 12px;
+     font-size:14px;text-align:center;margin-bottom:12px;line-height:1.5}
 
 .pick button.concept{background:linear-gradient(180deg,#FFF 0%,#F7F8FF 100%);border-color:var(--mainSoft)}
 .note .grp{background:var(--card);border-radius:16px;padding:14px 16px;margin-bottom:10px}
@@ -204,6 +207,27 @@ function drawZoomBar(){
   });
 }
 function save(){ try { localStorage.setItem('mk_v1', JSON.stringify(S)); } catch(e){} }
+/* ---------- 바퀴 수 ----------
+   어절을 다 익히면 완료 표시가 0으로 돌아가며 한 바퀴를 더 돈다.
+   그냥 0이 되면 기록이 날아간 것처럼 보이니 몇 바퀴째인지를 남긴다. */
+var KONUM = ['', '한', '두', '세', '네', '다섯', '여섯', '일곱', '여덟', '아홉', '열'];
+function konum(n){ return KONUM[n] || String(n); }
+function lapOf(key){ return (S.laps && S.laps[key]) || 1; }
+var lapJust = 0;                      // 이번 판에서 막 한 바퀴를 돌았으면 새 바퀴 번호
+function bumpLap(key){
+  if (!key) return 0;
+  if (!S.laps) S.laps = {};
+  S.laps[key] = lapOf(key) + 1;
+  save();
+  return S.laps[key];
+}
+function lapBar(n){
+  return n ? '<div class="lap">한 바퀴 완주 🎉 ' + konum(n) + ' 바퀴 시작</div>' : '';
+}
+function lapTail(key){
+  var n = lapOf(key);
+  return n > 1 ? ' · <b>' + konum(n) + ' 바퀴째</b>' : '';
+}
 function school(){ return SCHOOLS.filter(function(x){ return x.id === S.school; })[0] || null; }
 function myWorks(){
   var sc = school();
@@ -305,12 +329,12 @@ function home(){
   h += '<button class="concept" data-w="__concept__"><div class="nm">중세국어 기본 개념</div>'
     + '<div class="ds">제자 원리 · 표기법 · 높임 · 격조사 · 음운 현상</div>'
     + '<div class="pbar"><i style="width:'+Math.round(cm/CL.length*100)+'%"></i></div>'
-    + '<div class="pnum">문항 '+CL.length+'개 · 완료 '+cm+'개</div></button>';
+    + '<div class="pnum">문항 '+CL.length+'개 · 완료 '+cm+'개'+lapTail('concept')+'</div></button>';
   myWorks().forEach(function(w){
     var L = workCards(w), m = mastered(L), p = Math.round(m/L.length*100);
     h += '<button data-w="'+w.id+'"><div class="nm">'+mk(w.title)+'</div><div class="ds">'+mk(w.sub)+'</div>'
       +  '<div class="pbar"><i style="width:'+p+'%"></i></div>'
-      +  '<div class="pnum">어절 '+L.length+'개 · 완료 '+m+'개</div></button>';
+      +  '<div class="pnum">어절 '+L.length+'개 · 완료 '+m+'개'+lapTail(w.id)+'</div></button>';
   });
   h += '</div>';
   var weak = weakTags(3);
@@ -356,7 +380,7 @@ function renderWork(){
     b.onclick = function(){ tab = b.getAttribute('data-t'); renderWork(); };
   });
   if (tab==='read') readTab();
-  else if (tab==='quiz') startQuiz(workCards(curWork), curWork.title);
+  else if (tab==='quiz') startQuiz(workCards(curWork), curWork.title, curWork.id);
   else noteTab();
 }
 
@@ -434,19 +458,22 @@ function mixSession(pend, n){
   save();
   return shuffle(out);
 }
-function pickSession(list, n){
+function pickSession(list, n, lapKey){
   var pend = list.filter(function(x){ return !((S.cards[x.k]||{}).streak >= 2); });
-  if (!pend.length){                      // 다 끝냈으면 처음부터 다시
+  if (!pend.length){                      // 다 끝냈으면 한 바퀴 더
     list.forEach(function(x){ cardState(x.k).streak = 0; });
     pend = list.slice();
+    lapJust = bumpLap(lapKey);
   }
   if (pend.length <= n) return shuffle(pend);
   return mixSession(pend, n);
 }
 
-function startQuiz(list, label){
-  Q.list = list; Q.label = label; Q.n = 0; Q.right = 0;
-  Q.queue = pickSession(list, SESSION);
+function startQuiz(list, label, lapKey){
+  Q.list = list; Q.label = label; Q.n = 0; Q.right = 0; Q.lapKey = lapKey;
+  lapJust = 0;
+  Q.queue = pickSession(list, SESSION, lapKey);
+  Q.lap = lapJust;
   Q.session = Q.queue.slice();
   nextQ();
 }
@@ -500,7 +527,8 @@ function options(c, key){
 function nextQ(){
   if (!Q.queue.length) return finish();
   Q.cur = Q.queue[0]; Q.opts = options(Q.cur.c, Q.cur.k); Q.picked = {}; Q.graded = false;
-  var h = '<div class="box"><div class="qtop"><span>'+mk(Q.label)+'</span>'
+  var h = (Q.n === 0 ? lapBar(Q.lap) : '')
+    + '<div class="box"><div class="qtop"><span>'+mk(Q.label)+'</span>'
     + '<span>'+(Q.n + 1)+' / '+Q.session.length+'</span></div>'
     + '<div class="word"><div class="f y">'+esc(Q.cur.c.f)+'</div>'
     + ctxLine(Q.cur.w, Q.cur.c)
@@ -660,11 +688,16 @@ function conceptRead(){
   }).join('') + '</div>';
 }
 
-var C = {queue:[], cur:null, order:[], total:0, n:0, right:0, graded:false};
+var C = {queue:[], cur:null, order:[], total:0, n:0, right:0, graded:false, lap:0};
 function conceptQuiz(){
   var all = conceptCards();
   var pend = all.filter(function(x){ return !((S.cards[x.k]||{}).streak >= 2); });
-  if (!pend.length){ all.forEach(function(x){ cardState(x.k).streak = 0; }); pend = all.slice(); }
+  C.lap = 0;
+  if (!pend.length){
+    all.forEach(function(x){ cardState(x.k).streak = 0; });
+    pend = all.slice();
+    C.lap = bumpLap('concept');
+  }
   C.queue = pend.length <= SESSION ? shuffle(pend) : mixSession(pend, SESSION);
   C.total = C.queue.length; C.n = 0; C.right = 0;
   nextC();
@@ -675,7 +708,8 @@ function nextC(){
   var q = C.cur.q;
   // 보기 순서는 매번 섞되, 정답 위치를 기억하지 못하게 한다
   C.order = shuffle(q.opts.map(function(_, i){ return i; }));
-  $('body').innerHTML = '<div class="box"><div class="qtop"><span>기본 개념</span>'
+  $('body').innerHTML = (C.n === 0 ? lapBar(C.lap) : '')
+    + '<div class="box"><div class="qtop"><span>기본 개념</span>'
     + '<span>'+(C.n + 1)+' / '+C.total+'</span></div>'
     + '<div class="qbox">'+mk(q.q)+'</div>'
     + '<div class="mc" id="mc">'
